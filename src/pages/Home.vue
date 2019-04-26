@@ -1,17 +1,29 @@
 <template>
   <div class="home">
     <main>
-      <UsersList />
+      <SelectedUsers />
+      <UsersList :onSelect="addItem" />
     </main>
   </div>
 </template>
 
 <script>
 import UsersList from '@/components/common/UserList'
+import SelectedUsers from '@/components/common/SelectedUsers'
+
 export default {
   name: 'Home',
   components: {
-    UsersList
+    UsersList,
+    SelectedUsers
+  },
+  data: () => ({
+    selectedItems: []
+  }),
+  methods: {
+    addItem(item) {
+      this.selectedItems = this.selectedItems.concat(item)
+    }
   }
 }
 </script>

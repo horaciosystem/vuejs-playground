@@ -7,7 +7,12 @@
       <template #default="{ data }">
         <div v-if="data">
           <div class="List__Container">
-            <UserCard v-for="user in data" :key="user.id" :user="user" />
+            <UserCard
+              v-for="user in data"
+              :key="user.id"
+              :user="user"
+              @select="onSelect"
+            />
           </div>
           <footer class="footer">
             <div class="content has-text-centered">
@@ -15,7 +20,7 @@
                 More
               </button>
               <button class="button is-secondary" @click="increasePageSize">
-                Increase page size
+                Increase page size(fake action)
               </button>
             </div>
           </footer>
@@ -38,10 +43,14 @@ export default {
     UserCard,
     Fetcher
   },
+  props: {
+    onSelect: {
+      type: Function
+    }
+  },
   data() {
     return {
-      usersUrl: BASE_URL,
-      pageSize: 0
+      usersUrl: BASE_URL
     }
   },
   methods: {

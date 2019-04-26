@@ -23,10 +23,11 @@ export default {
     loading: false,
     data: null
   }),
-  created() {
-    this.$watch('url', this.fetchModel, {
+  watch: {
+    url: {
+      handler: 'fetchModel',
       immediate: true
-    })
+    }
   },
   methods: {
     fetchModel() {

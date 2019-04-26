@@ -1,5 +1,6 @@
 <template>
   <div class="about">
+    {{ selectedItems }}
     <h1 class="title">User Detail</h1>
     <UserDetails :userLogin="$route.params.login" />
   </div>
