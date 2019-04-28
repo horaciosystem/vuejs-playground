@@ -1,53 +1,59 @@
 <template>
-  <Fetcher :url="`//api.github.com/users/${userLogin}`">
-    <template
-      #default="{ data: { id, avatar_url, created_at, html_url, bio } }"
-    >
+  <div>
+    <span v-if="user.loading">Loading...</span>
+    <span v-if="user.error">An error accured</span>
+    <div v-if="user.data">
       <div>
-        <div>
-          <img
-            as="{Image}"
-            src="{avatar_url}"
-            alt="User avatar"
-            width="{200}"
-            height="{200}"
-          />
-        </div>
-        <div>
-          <span>ID</span>
-          <div>{{ id }}</div>
-        </div>
-        <div v-show="bio">
-          <span>Bio</span>
-          <div>{{ bio }}</div>
-        </div>
-        <div>
-          <span>Create at</span>
-          <div>{{ formatDate(new Date(created_at)) }}</div>
-        </div>
-        <div>
-          <a href="{html_url}" rel="noopener noreferrer" target="_blank">
-            Github profile
-          </a>
-        </div>
+        <img
+          :src="user.data.avatar_url"
+          alt="User avatar"
+          width="200"
+          height="200"
+        />
       </div>
-    </template>
-  </Fetcher>
+      <div>
+        <div>ID {{ user.data.id }}</div>
+      </div>
+      <div v-show="user.data.bio">
+        <div>Bio {{ user.data.bio }}</div>
+      </div>
+      <div>
+        <div>Create at {{ formatDate(new Date(user.data.created_at)) }}</div>
+      </div>
+      <div>
+        <a :href="user.data.html_url" rel="noopener noreferrer" target="_blank">
+          Github profile
+        </a>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Fetcher from '@/components/common/Fetcher'
+import fetchService from '@/mixins/fetchService'
+const BASE_URL = '//api.github.com/users'
+
+const userDetailsFetcher = {
+  methodName: 'fetchUser',
+  handler: ({ url }) => fetch(url)
+}
 
 export default {
   name: 'UserDetails',
-  components: {
-    Fetcher
-  },
+  mixins: [fetchService({ key: 'user', fetcher: userDetailsFetcher })],
   props: {
     userLogin: {
       type: String,
       default: ''
     }
+  },
+  data() {
+    return {
+      url: `${BASE_URL}/${this.userLogin}`
+    }
+  },
+  mounted() {
+    this.fetchUser({ url: this.url })
   },
   methods: {
     formatDate(date) {

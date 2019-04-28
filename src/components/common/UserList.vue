@@ -3,66 +3,64 @@
     <h1 class="title">
       User List
     </h1>
-    <Fetcher :url="usersUrl" :stateUpdater="stateUpdater">
-      <template #default="{ data }">
-        <div v-if="data">
-          <div class="List__Container">
-            <UserCard
-              v-for="user in data"
-              :key="user.id"
-              :user="user"
-              @select="onSelect"
-            />
-          </div>
-          <footer class="footer">
-            <div class="content has-text-centered">
-              <button class="button is-primary" @click="loadMore(data)">
-                More
-              </button>
-              <button class="button is-secondary" @click="increasePageSize">
-                Increase page size(fake action)
-              </button>
-            </div>
-          </footer>
+    <span v-if="users.loading">Loading...</span>
+    <span v-if="users.error">An error accured</span>
+    <div v-if="users.data">
+      <div class="List__Container">
+        <UserCard v-for="user in users.data" :key="user.id" :user="user" />
+      </div>
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <button class="button is-primary" @click="loadMore">
+            More
+          </button>
         </div>
-        <span v-else>There are no items</span>
-      </template>
-    </Fetcher>
+      </footer>
+    </div>
+    <span v-else>There are no items</span>
   </div>
 </template>
 
 <script>
-import Fetcher from '@/components/common/Fetcher'
-import UserCard from './UserCard'
+import UserCard from '@/components/common/UserCard'
+import fetchService from '@/mixins/fetchService'
 
 const BASE_URL = '//api.github.com/users'
+
+const usersFetcher = {
+  methodName: 'fetchUsers',
+  handler: ({ url }) => fetch(url),
+  stateUpdater: ({ prevState, currentData }) => {
+    return prevState.concat(currentData)
+  }
+}
 
 export default {
   name: 'UserList',
   components: {
-    UserCard,
-    Fetcher
+    UserCard
   },
-  props: {
-    onSelect: {
-      type: Function
-    }
-  },
+  mixins: [
+    fetchService({ key: 'users', initialState: [], fetcher: usersFetcher })
+  ],
   data() {
     return {
       usersUrl: BASE_URL
     }
   },
+  watch: {
+    usersUrl: {
+      handler: 'loadUsers',
+      immediate: true
+    }
+  },
   methods: {
-    stateUpdater({ previousState, currentState }) {
-      return previousState ? previousState.concat(currentState) : currentState
+    loadUsers() {
+      this.fetchUsers({ url: this.usersUrl })
     },
-    loadMore(data) {
-      let [last] = data.slice(-1)
+    loadMore() {
+      let [last] = this.users.data.slice(-1)
       this.usersUrl = `${BASE_URL}?since=${last.id}`
-    },
-    increasePageSize() {
-      this.pageSize = this.pageSize += 5
     }
   }
 }
