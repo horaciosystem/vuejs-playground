@@ -1,29 +1,18 @@
 <template>
   <div class="home">
     <main>
-      <SelectedUsers />
-      <UsersList :onSelect="addItem" />
+      <UserListVuex />
     </main>
   </div>
 </template>
 
 <script>
-import UsersList from '@/components/common/UserList'
-import SelectedUsers from '@/components/common/SelectedUsers'
+import UserListVuex from '@/components/common/UserListVuex'
 
 export default {
   name: 'Home',
   components: {
-    UsersList,
-    SelectedUsers
-  },
-  data: () => ({
-    selectedItems: []
-  }),
-  methods: {
-    addItem(item) {
-      this.selectedItems = this.selectedItems.concat(item)
-    }
+    UserListVuex
   }
 }
 </script>

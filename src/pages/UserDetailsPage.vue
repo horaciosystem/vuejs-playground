@@ -1,17 +1,17 @@
 <template>
   <div class="about">
     <h1 class="title">User Detail</h1>
-    <UserDetails :userLogin="$route.params.login" />
+    <UserDetailsVuex :userLogin="$route.params.login" />
   </div>
 </template>
 
 <script>
-import UserDetails from '@/components/common/UserDetails'
+import UserDetailsVuex from '@/components/common/UserDetailsVuex'
 
 export default {
   name: 'UserDetailPage',
   components: {
-    UserDetails
+    UserDetailsVuex
   }
 }
 </script>
