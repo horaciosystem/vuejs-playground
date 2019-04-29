@@ -3,8 +3,8 @@
     <h1 class="title">
       User List
     </h1>
-    <span v-if="users.loading">Loading...</span>
-    <span v-if="users.error">An error accured</span>
+    <span v-if="users.loading && !users.data">Loading...</span>
+    <span v-if="users.error">An error occurred</span>
     <div v-if="users.data">
       <div class="List__Container">
         <UserCard v-for="user in users.data" :key="user.id" :user="user" />
@@ -25,13 +25,22 @@
 import UserCard from '@/components/common/UserCard'
 import fetchService from '@/mixins/fetchService'
 
-const BASE_URL = '//api.github.com/users'
+const BASE_URL = 'https://api.github.com/users'
 
 const usersFetcher = {
   methodName: 'fetchUsers',
   handler: ({ url }) => fetch(url),
   stateUpdater: ({ prevState, currentData }) => {
-    return prevState.concat(currentData)
+    //update items already exist
+    let updatedItems = prevState.map(prevItem => {
+      let newItem = currentData.find(newItem => newItem.id === prevItem.id)
+      return newItem || prevItem
+    })
+    //get only new items
+    let newItems = currentData.filter(newItem => {
+      return !updatedItems.some(oldItem => oldItem.id === newItem.id)
+    })
+    return updatedItems.concat(newItems)
   }
 }
 

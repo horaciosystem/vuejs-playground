@@ -1,3 +1,5 @@
+let cache = {}
+
 function fetchService({
   key,
   initialState = null,
@@ -17,14 +19,21 @@ function fetchService({
     }),
     methods: {
       [methodName]: function(props) {
+        let cached = cache[key]
+        if (cached) {
+          this[key].data = cached
+        }
+
         this[key].loading = true
         handler(props)
           .then(response => response.json())
           .then(data => {
-            this[key].data = stateUpdater({
+            let result = stateUpdater({
               prevState: this[key].data,
               currentData: data
             })
+            this[key].data = result
+            cache[key] = result
             this[key].error = null
           })
           .catch(error => {

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <span v-if="user.loading">Loading...</span>
-    <span v-if="user.error">An error accured</span>
-    <div v-if="user.data">
+    <span v-if="user.loading && !user.data">Loading...</span>
+    <span v-else-if="user.error">An error occurred</span>
+    <div v-if="user.data && !user.loading">
       <div>
         <img
           :src="user.data.avatar_url"
@@ -31,7 +31,7 @@
 
 <script>
 import fetchService from '@/mixins/fetchService'
-const BASE_URL = '//api.github.com/users'
+const BASE_URL = 'https://api.github.com/users'
 
 const userDetailsFetcher = {
   methodName: 'fetchUser',
