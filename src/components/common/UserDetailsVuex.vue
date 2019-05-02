@@ -25,6 +25,7 @@
           Github profile
         </a>
       </div>
+      <span>{{ userRepos.data.length }}</span>
     </div>
   </div>
 </template>
@@ -43,17 +44,22 @@ export default {
   },
   data() {
     return {
-      url: `${BASE_URL}/${this.userLogin}`
+      userUrl: `${BASE_URL}/${this.userLogin}`,
+      userReposUrl: `${BASE_URL}/${this.userLogin}/repos`
     }
   },
   computed: {
-    ...mapState('user', { user: state => state })
+    ...mapState('user', {
+      user: state => state.user,
+      userRepos: state => state.userRepos
+    })
   },
   mounted() {
-    this.fetchUser({ url: this.url })
+    this.fetchUser({ url: this.userUrl })
+    this.fetchUserRepos({ url: this.userReposUrl })
   },
   methods: {
-    ...mapActions('user', ['fetchUser']),
+    ...mapActions('user', ['fetchUser', 'fetchUserRepos']),
     formatDate(date) {
       let day = date.getDate()
       let month = date.getMonth() + 1

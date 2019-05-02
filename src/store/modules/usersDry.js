@@ -14,8 +14,10 @@ function stateUpdater({ prevState, currentData }) {
 }
 
 let asyncAction = createASynAction({
+  key: 'usersDry',
   methodName: 'fetchUsers',
-  handler: ({ url }) => fetch(url),
+  initialState: [],
+  handler: ({ url }) => fetch(url).then(response => response.json()),
   stateUpdater
 })
 

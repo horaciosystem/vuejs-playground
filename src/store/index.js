@@ -6,6 +6,8 @@ import user from './modules/user'
 
 Vue.use(Vuex)
 
+console.log(user)
+
 export default new Vuex.Store({
   modules: {
     users,

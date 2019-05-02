@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import UserListVuex from '@/components/common/UserListVuex'
+import UserListVuex from '@/components/common/UserListVuex/UserListVuex'
 
 export default {
   name: 'Home',

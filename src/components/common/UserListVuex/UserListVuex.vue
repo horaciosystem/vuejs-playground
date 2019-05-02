@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     ...mapState('usersDry', {
-      users: state => state
+      users: state => state.usersDry
     })
   },
   watch: {

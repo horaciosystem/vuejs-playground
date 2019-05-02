@@ -1,15 +1,16 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    jest: true
   },
   extends: [
     'plugin:vue/recommended',
     'eslint:recommended',
     'prettier/vue',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended'
   ],
-  plugins: ['vue', 'prettier'],
+  plugins: ['vue', 'prettier', 'jest'],
   rules: {
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'vue/attribute-hyphenation': 'off',

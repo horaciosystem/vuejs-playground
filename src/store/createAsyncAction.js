@@ -1,39 +1,48 @@
 export default function createAsyncAction({
+  key,
   methodName,
   handler,
+  initialState = null,
   stateUpdater = ({ currentData }) => currentData
 }) {
+  let [setLoading, setError, setData] = [
+    `${key}SetLoading`,
+    `${key}SetError`,
+    `${key}SetData`
+  ]
+
   return {
     state: {
-      loading: false,
-      error: null,
-      data: []
+      [key]: {
+        loading: false,
+        error: null,
+        data: initialState
+      }
     },
     mutations: {
-      setData(state, data) {
-        state.data = data
+      [setData]: function(state, data) {
+        state[key].data = data
       },
-      setLoading(state, loading) {
-        state.loading = loading
+      [setLoading]: function(state, loading) {
+        state[key].loading = loading
       },
-      setError(state, error) {
-        state.error = error
+      [setError]: function(state, error) {
+        state[key].error = error
       }
     },
     actions: {
       [methodName]: function({ commit, state }, params) {
-        commit('setLoading', true)
-        handler(params)
-          .then(response => response.json())
+        commit(setLoading, true)
+        return handler(params)
           .then(data => {
             let newData = stateUpdater({
-              prevState: state.data,
+              prevState: state[key].data,
               currentData: data
             })
-            commit('setData', newData)
+            commit(setData, newData)
           })
-          .catch(error => commit('setError', error))
-          .finally(() => commit('setLoading', false))
+          .catch(error => commit(setError, error))
+          .finally(() => commit(setLoading, false))
       }
     }
   }
